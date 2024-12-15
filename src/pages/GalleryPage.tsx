@@ -9,6 +9,7 @@ interface GalleryImage {
   featured?: boolean;
   description: string;
   tags?: string[];
+  lowQuality?: string;
 }
 
 export default function GalleryPage() {
@@ -16,13 +17,14 @@ export default function GalleryPage() {
   const [loaded, setLoaded] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [showSearch, setShowSearch] = useState(false);
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
 
   const categories = [
     { id: 'all', name: 'All', icon: '🍽️' },
     { id: 'food', name: 'Food', icon: '🍝' },
     { id: 'interior', name: 'Interior', icon: '🏰' },
     { id: 'events', name: 'Events', icon: '🎉' },
-    { id: 'drinks', name: 'Drinks', icon: '🍷' }
+    { id: 'drinks', name: 'Beverages', icon: '☕' }
   ];
 
   const galleryImages: GalleryImage[] = [
@@ -33,7 +35,8 @@ export default function GalleryPage() {
       category: "food",
       featured: true,
       description: "Fresh tomatoes, mozzarella, and basil on toasted bread, drizzled with balsamic glaze. A perfect start to your dining experience.",
-      tags: ['appetizer', 'vegetarian', 'italian']
+      tags: ['appetizer', 'vegetarian', 'italian'],
+      lowQuality: "/img/Bruschetta-with-Mozzarella-SQUARE3.jpg?w=20&q=10"
     },
     {
       id: 2,
@@ -42,7 +45,8 @@ export default function GalleryPage() {
       category: "food",
       featured: true,
       description: "Premium cut beef tenderloin, perfectly grilled to your preference. Served with seasonal vegetables and red wine reduction.",
-      tags: ['main course', 'beef', 'grill']
+      tags: ['main course', 'beef', 'grill'],
+      lowQuality: "/img/FilletMignon.webp?w=20&q=10"
     },
     {
       id: 3,
@@ -50,7 +54,8 @@ export default function GalleryPage() {
       alt: "Beef Tenderloin",
       category: "food",
       description: "Expertly prepared beef tenderloin with a rich wine reduction sauce.",
-      tags: ['main course', 'beef', 'signature']
+      tags: ['main course', 'beef', 'signature'],
+      lowQuality: "/img/tenderloin-1.jpg?w=20&q=10"
     },
     {
       id: 4,
@@ -58,24 +63,27 @@ export default function GalleryPage() {
       alt: "Buttered Tomatoes",
       category: "food",
       description: "Garden-fresh tomatoes sautéed in herb butter, a perfect side dish.",
-      tags: ['side dish', 'vegetarian', 'fresh']
+      tags: ['side dish', 'vegetarian', 'fresh'],
+      lowQuality: "/img/Buttered-Tomatoes.webp?w=20&q=10"
     },
     {
       id: 5,
-      src: "https://images.unsplash.com/photo-1560963689-b5682b6440f8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1934&q=80",
-      alt: "Premium Wine Selection",
+      src: "https://images.unsplash.com/photo-1534353473418-4cfa6c56fd38?ixlib=rb-1.2.1&auto=format&fit=crop&w=1934&q=80",
+      alt: "Fresh Fruit Smoothies",
       category: "drinks",
       featured: true,
-      description: "Curated selection of fine wines from around the world.",
-      tags: ['wine', 'drinks', 'alcohol']
+      description: "Refreshing smoothies made with fresh seasonal fruits and natural ingredients.",
+      tags: ['beverages', 'healthy', 'fresh'],
+      lowQuality: "https://images.unsplash.com/photo-1534353473418-4cfa6c56fd38?ixlib=rb-1.2.1&auto=format&fit=crop&w=20&q=10"
     },
     {
       id: 6,
-      src: "https://images.unsplash.com/photo-1536935338788-846bb9981813?ixlib=rb-1.2.1&auto=format&fit=crop&w=1586&q=80",
-      alt: "Signature Cocktails",
+      src: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?ixlib=rb-1.2.1&auto=format&fit=crop&w=1934&q=80",
+      alt: "Artisan Mocktails",
       category: "drinks",
-      description: "Handcrafted cocktails made with premium spirits and fresh ingredients.",
-      tags: ['cocktails', 'drinks', 'alcohol']
+      description: "Creative non-alcoholic cocktails crafted with fresh juices and premium ingredients.",
+      tags: ['beverages', 'mocktails', 'refreshing'],
+      lowQuality: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?ixlib=rb-1.2.1&auto=format&fit=crop&w=20&q=10"
     },
     {
       id: 7,
@@ -83,7 +91,8 @@ export default function GalleryPage() {
       alt: "Artisan Coffee",
       category: "drinks",
       description: "Specialty coffee drinks prepared by our expert baristas.",
-      tags: ['coffee', 'drinks', 'hot beverages']
+      tags: ['coffee', 'beverages', 'hot drinks'],
+      lowQuality: "https://images.unsplash.com/photo-1442512595331-e89e73853f31?ixlib=rb-1.2.1&auto=format&fit=crop&w=20&q=10"
     },
     {
       id: 8,
@@ -92,7 +101,8 @@ export default function GalleryPage() {
       category: "interior",
       featured: true,
       description: "Elegant main dining space with modern decor and ambient lighting.",
-      tags: ['interior', 'dining room', 'ambiance']
+      tags: ['interior', 'dining room', 'ambiance'],
+      lowQuality: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=20&q=10"
     },
     {
       id: 9,
@@ -100,15 +110,17 @@ export default function GalleryPage() {
       alt: "Private Dining Suite",
       category: "interior",
       description: "Intimate private dining room perfect for special occasions and gatherings.",
-      tags: ['interior', 'private dining', 'events']
+      tags: ['interior', 'private dining', 'events'],
+      lowQuality: "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?ixlib=rb-1.2.1&auto=format&fit=crop&w=20&q=10"
     },
     {
       id: 10,
-      src: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1934&q=80",
-      alt: "Restaurant Bar",
+      src: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=2070&q=80",
+      alt: "Outdoor Terrace",
       category: "interior",
-      description: "Sophisticated bar area featuring premium spirits and comfortable seating.",
-      tags: ['interior', 'bar', 'drinks']
+      description: "Beautiful outdoor dining area surrounded by lush greenery.",
+      tags: ['interior', 'outdoor', 'dining'],
+      lowQuality: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=20&q=10"
     },
     {
       id: 11,
@@ -117,7 +129,8 @@ export default function GalleryPage() {
       category: "events",
       featured: true,
       description: "Elegant private event setup with custom decorations and fine dining service.",
-      tags: ['events', 'private', 'celebration']
+      tags: ['events', 'private', 'celebration'],
+      lowQuality: "https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?ixlib=rb-1.2.1&auto=format&fit=crop&w=20&q=10"
     },
     {
       id: 12,
@@ -126,28 +139,42 @@ export default function GalleryPage() {
       category: "events",
       featured: true,
       description: "Elegant wedding reception venue with crystal chandeliers, fine table settings, and romantic ambiance.",
-      tags: ['events', 'wedding', 'celebration', 'luxury']
+      tags: ['events', 'wedding', 'celebration', 'luxury'],
+      lowQuality: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?ixlib=rb-1.2.1&auto=format&fit=crop&w=20&q=10"
     }
   ];
 
+  // Preload images
   useEffect(() => {
-    setLoaded(true);
+    const preloadImage = (src: string) => {
+      const img = new Image();
+      img.onload = () => {
+        setLoadedImages(prev => new Set([...prev, src]));
+      };
+      img.src = src;
+    };
+
+    galleryImages.forEach(image => {
+      if (image.featured) {
+        preloadImage(image.src);
+      }
+    });
   }, []);
 
   const handleImageClick = (image: GalleryImage) => {
     Swal.fire({
+      title: image.alt,
       imageUrl: image.src,
       imageAlt: image.alt,
-      title: image.alt,
       html: `
         <div class="text-left">
-          <p class="text-gray-300 mb-4">${image.description}</p>
+          <p class="text-gray-700 mb-4">${image.description}</p>
           ${image.tags ? `
-            <div class="flex flex-wrap gap-2 mt-3">
-              ${image.tags.map(tag => `
-                <span class="px-2 py-1 bg-gray-800 rounded-full text-xs text-gray-300">#${tag}</span>
-              `).join('')}
-            </div>
+          <div class="flex flex-wrap gap-2">
+            ${image.tags.map(tag => `
+              <span class="px-2 py-1 bg-gray-100 rounded-full text-sm text-gray-600">#${tag}</span>
+            `).join('')}
+          </div>
           ` : ''}
           ${image.featured ? '<span class="text-yellow-400 mt-4 block">⭐ Featured Item</span>' : ''}
         </div>
@@ -241,11 +268,36 @@ export default function GalleryPage() {
               onClick={() => handleImageClick(image)}
             >
               <div className="aspect-w-16 aspect-h-12">
+                {/* Low quality placeholder */}
+                {image.lowQuality && (
+                  <div
+                    className={`absolute inset-0 transition-opacity duration-500 ${
+                      loadedImages.has(image.src) ? 'opacity-0' : 'opacity-100'
+                    }`}
+                    style={{
+                      backgroundImage: `url(${image.lowQuality})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      filter: 'blur(10px)',
+                      transform: 'scale(1.1)'
+                    }}
+                  />
+                )}
+                
+                {/* High quality image */}
                 <img
                   src={image.src}
                   alt={image.alt}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  className={`w-full h-full object-cover transition-all duration-700 ${
+                    loadedImages.has(image.src) 
+                      ? 'opacity-100 group-hover:scale-110' 
+                      : 'opacity-0'
+                  }`}
                   loading="lazy"
+                  decoding="async"
+                  fetchPriority={image.featured ? "high" : "low"}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  onLoad={() => setLoadedImages(prev => new Set([...prev, image.src]))}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300">
                   <div className="absolute bottom-0 left-0 right-0 p-6 text-white transform translate-y-6 group-hover:translate-y-0 transition-transform duration-300">
