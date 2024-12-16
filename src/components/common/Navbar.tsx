@@ -23,7 +23,7 @@ export default function Navbar() {
             </Link>
             <span className="text-2xl font-bold text-gray-900 ml-2">
               <NavLink to="/" className={({ isActive }) => (isActive ? 'text-green-600 font-semibold' : 'text-gray-700 hover:text-green-600')}>
-                Rozzamma Cafe
+                Rozzama Cafe
               </NavLink>
             </span>
           </div>
