@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import OrderModal from '../components/menu/OrderModal';
 
 interface MenuItem {
@@ -9,7 +9,7 @@ interface MenuItem {
   image?: string;
 }
 
-export default function MenuPage() {
+const MenuPage: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -76,89 +76,75 @@ export default function MenuPage() {
     setIsModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedItem(null);
-  };
-
   return (
-    <div className="bg-white min-h-screen py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Our <span className="text-green-600">Menu</span>
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Discover our carefully curated selection of dishes, crafted with passion
-            and the finest ingredients.
-          </p>
-        </div>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-4xl font-bold text-center mb-8">Our Menu</h1>
 
-        {/* Category Tabs */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setActiveCategory(category.id)}
-              className={`px-6 py-2 rounded-full text-sm font-medium transition-colors
-                ${
-                  activeCategory === category.id
-                    ? 'bg-green-600 text-white'
-                    : 'bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-600'
-                }`}
-            >
-              {category.name}
-            </button>
-          ))}
-        </div>
-
-        {/* Menu Grid */}
-        <div className="grid md:grid-cols-2 gap-8">
-          {filteredItems.map((item, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-100 flex"
-            >
-              {item.image && (
-                <div className="w-1/3">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
-              <div className="flex-1 p-6">
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-xl font-semibold text-black">
-                    {item.name}
-                  </h3>
-                  <span className="text-lg font-bold text-black">
-                    KSh {item.price}
-                  </span>
-                </div>
-                <p className="text-black mb-4">{item.description}</p>
-                <button 
-                  onClick={() => handleOrderClick(item)}
-                  className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition"
-                >
-                  Order Now
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+      {/* Category Tabs */}
+      <div className="flex flex-wrap justify-center gap-4 mb-12">
+        {categories.map((category) => (
+          <button
+            key={category.id}
+            onClick={() => setActiveCategory(category.id)}
+            className={`px-6 py-2 rounded-full text-sm font-medium transition-colors
+              ${
+                activeCategory === category.id
+                  ? 'bg-green-600 text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-600'
+              }`}
+          >
+            {category.name}
+          </button>
+        ))}
       </div>
-      
+
+      {/* Menu Grid */}
+      <div className="grid md:grid-cols-2 gap-8">
+        {filteredItems.map((item, index) => (
+          <div
+            key={index}
+            className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-100 flex"
+          >
+            {item.image && (
+              <div className="w-1/3">
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+            <div className="flex-1 p-6">
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="text-xl font-semibold text-black">
+                  {item.name}
+                </h3>
+                <span className="text-lg font-bold text-black">
+                  KSh {item.price}
+                </span>
+              </div>
+              <p className="text-black mb-4">{item.description}</p>
+              <button 
+                onClick={() => handleOrderClick(item)}
+                className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition"
+              >
+                Order Now
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
       {/* Order Modal */}
       {selectedItem && (
         <OrderModal
           isOpen={isModalOpen}
-          onClose={handleCloseModal}
+          onClose={() => setIsModalOpen(false)}
           item={selectedItem}
         />
       )}
     </div>
   );
-}
+};
+
+export default MenuPage;

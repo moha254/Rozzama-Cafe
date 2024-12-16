@@ -1,4 +1,5 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
+import OrderModal from '../menu/OrderModal';
 
 interface MenuItem {
   name: string;
@@ -11,24 +12,32 @@ const featuredItems: MenuItem[] = [
   {
     name: "Grilled Salmon",
     description: "Fresh Atlantic salmon with herbs and lemon butter sauce",
-    price: "KES 2,800",
+    price: "2800",
     image: "https://images.unsplash.com/photo-1485704686097-ed47f7263ca4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
   },
   {
     name: "Beef Tenderloin",
     description: "Prime cut tenderloin with red wine reduction",
-    price: "KES 3,400",
+    price: "3400",
     image: "/img/tenderloin-1.jpg"
   },
   {
     name: "Truffle Pasta",
     description: "Homemade fettuccine with black truffle and parmesan",
-    price: "KES 2,600",
+    price: "2600",
     image: "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
   }
 ];
 
 const FeaturedMenu: FC = () => {
+  const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOrderClick = (item: MenuItem) => {
+    setSelectedItem(item);
+    setIsModalOpen(true);
+  };
+
   return (
     <section className="bg-white py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -56,8 +65,11 @@ const FeaturedMenu: FC = () => {
                 </h3>
                 <p className="text-gray-600 mb-4">{item.description}</p>
                 <div className="flex justify-between items-center">
-                  <span className="text-green-600 font-bold">{item.price}</span>
-                  <button className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition">
+                  <span className="text-green-600 font-bold">KES {item.price}</span>
+                  <button 
+                    onClick={() => handleOrderClick(item)}
+                    className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition"
+                  >
                     Order Now
                   </button>
                 </div>
@@ -66,6 +78,15 @@ const FeaturedMenu: FC = () => {
           ))}
         </div>
       </div>
+
+      {/* Order Modal */}
+      {selectedItem && (
+        <OrderModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          item={selectedItem}
+        />
+      )}
     </section>
   );
 };

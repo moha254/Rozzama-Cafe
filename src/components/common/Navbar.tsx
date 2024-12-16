@@ -18,8 +18,14 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <img src="/img/logo-673892610ff12.png" className="h-8 w-auto" alt="Logo" />
-            <span className="text-2xl font-bold text-gray-900 ml-2">Rozzama Cafe</span>
+            <Link to="/">
+              <img src="/img/logo-673892610ff12.png" className="h-8 w-auto" alt="Logo" />
+            </Link>
+            <span className="text-2xl font-bold text-gray-900 ml-2">
+              <NavLink to="/" className={({ isActive }) => (isActive ? 'text-green-600 font-semibold' : 'text-gray-700 hover:text-green-600')}>
+                Rozzamma Cafe
+              </NavLink>
+            </span>
           </div>
           <div className="hidden md:flex items-center space-x-8">
             {links.map(link => (
